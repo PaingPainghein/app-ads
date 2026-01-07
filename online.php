@@ -1,3 +1,6 @@
+<?php
+header('Content-Type: text/html; charset=UTF-8');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -231,9 +234,10 @@
             BAMAR NETWORK INFRASTRUCTURE
         </div>
     </div>
+    
     <script>
         // Server Configuration
-         const servers = [
+        const servers = [
             { 
                 id: 'th-01', 
                 name: 'Thailand-01 SSH OVPN SSL', 
