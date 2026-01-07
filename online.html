@@ -301,7 +301,7 @@ header('Content-Type: text/html; charset=UTF-8');
             for (let proxy of proxies) {
                 try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 4000); // 4s timeout
+                    const timeoutId = setTimeout(() => controller.abort(), 1000); // 4s timeout
 
                     const r = await fetch(proxy(url), { signal: controller.signal });
                     clearTimeout(timeoutId);
@@ -422,7 +422,7 @@ header('Content-Type: text/html; charset=UTF-8');
 
         let timer;
         function startTimer() {
-            let s = 20;
+            let s = 3;
             const el = document.getElementById('refreshTimer');
             if(timer) clearInterval(timer);
             el.innerText = s; // Show initial time
