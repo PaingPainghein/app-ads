@@ -88,6 +88,7 @@ header('Content-Type: text/html; charset=UTF-8');
             color: var(--text-main);
             line-height: 1;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
         }
 
         /* Server List */
@@ -154,10 +155,21 @@ header('Content-Type: text/html; charset=UTF-8');
             align-items: center;
             justify-content: center;
             font-family: 'Chakra Petch', sans-serif;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             color: var(--accent);
             cursor: pointer;
+            transition: all 0.3s;
         }
+
+        .refresh-circle:hover, .refresh-circle.loading {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--accent);
+        }
+        
+        .spin-anim {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* New Download Section Style */
         .download-box {
@@ -198,7 +210,9 @@ header('Content-Type: text/html; charset=UTF-8');
     <div class="dashboard-container">
         <div class="header-section">
             <div class="brand-text">PPH GOOD <span class="brand-highlight">VPN</span></div>
-            <div class="refresh-circle" id="refreshTimer" onclick="refresh()">20</div>
+            <div class="refresh-circle" id="refreshBtn" onclick="manualRefresh()">
+                <i class="bi bi-arrow-clockwise" id="refreshIcon"></i>
+            </div>
         </div>
 
         <div class="stats-box">
@@ -236,49 +250,27 @@ header('Content-Type: text/html; charset=UTF-8');
     </div>
     
     <script>
-        // Server Configuration
         const servers = [
-            { 
-                id: 'th-01', 
-                name: 'Thailand-01 SSH OVPN SSL', 
-                urls: [
-                    'http://103.99.11.13:81/server/online'
-                ] 
-            },
-            { 
-                id: 'th-02', 
-                name: 'Thailand-02 SSH OVPN SSL', 
-                urls: [
-                    'http://103.99.11.176:8888/server/online'
-                ] 
-            },
-            { 
-                id: 'th-03', 
-                name: 'Thailand-01 UDP', 
-                urls: [
-                    'http://103.99.11.13/udpserver/online'
-                ] 
-            },
-            { 
-                id: 'th-05', 
-                name: 'Thailand-02 UDP', 
-                urls: [
-                    'http://103.99.11.176/udpserver/online'
-                ] 
-            }
+            { id: 'th-01', name: 'Thailand-01 SSH OVPN SSL', urls: ['http://103.99.11.13:81/server/online'] },
+            { id: 'th-02', name: 'Thailand-02 SSH OVPN SSL', urls: ['http://103.99.11.176:8888/server/online'] },
+            { id: 'th-03', name: 'Thailand-01 UDP', urls: ['http://103.99.11.13/udpserver/online'] },
+            { id: 'th-05', name: 'Thailand-02 UDP', urls: ['http://103.99.11.176/udpserver/online'] }
         ];
 
         const LIMIT = 250;
-        // Optimized Proxy List - Added fallback and changed order for speed
         const proxies = [
             url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
             url => `https://corsproxy.io/?${encodeURIComponent(url)}`
         ];
 
-        // 1. Initialize Layout (Fixed Order)
+        // STORE STATE (To prevent flashing 0)
+        let serverValues = {};
+        
+        // Init state with 0 for all servers
+        servers.forEach(s => serverValues[s.id] = 0);
+
         function initLayout() {
             const container = document.getElementById('serverContainer');
-            // Only create if empty to prevent flickering
             if (container.children.length === 0) {
                 servers.forEach(srv => {
                     const el = document.createElement('div');
@@ -287,7 +279,7 @@ header('Content-Type: text/html; charset=UTF-8');
                     el.innerHTML = `
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="server-name" style="color: #444">${srv.name}</span>
-                            <span class="status-badge" style="color: #444">WAITING</span>
+                            <span class="status-badge" style="color: #444">...</span>
                         </div>
                         <div class="skeleton-text" style="width: 100%; margin-top: 15px;"></div>
                     `;
@@ -297,148 +289,149 @@ header('Content-Type: text/html; charset=UTF-8');
         }
 
         async function apiFetch(url) {
-            // Short timeout for quicker failover
             for (let proxy of proxies) {
                 try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 1000); // 4s timeout
+                    const timeoutId = setTimeout(() => controller.abort(), 2000); 
 
                     const r = await fetch(proxy(url), { signal: controller.signal });
                     clearTimeout(timeoutId);
                     
                     if(r.ok) {
                         const text = await r.text();
-                        // Verify if it's a number
-                        if (!isNaN(parseInt(text.trim()))) {
-                            return text;
-                        }
+                        const num = parseInt(text.trim());
+                        if (!isNaN(num)) return num;
                     }
-                } catch(e) {
-                    // Continue to next proxy
-                }
+                } catch(e) { }
             }
             return null;
         }
 
-        async function refresh() {
-            // Reset Timer Immediately
-            clearInterval(timer);
-            document.getElementById('refreshTimer').innerText = '...';
-            document.getElementById('systemStatus').innerHTML = '<i class="bi bi-hourglass-split"></i> UPDATING...';
-
-            initLayout(); 
-            
+        // Calculates Total based on SAVED values
+        function recalculateTotal() {
             let total = 0;
-            let activeServers = 0;
-
-            const tasks = servers.map(async (srv) => {
-                const results = await Promise.all(srv.urls.map(u => apiFetch(u)));
-                let count = 0;
-                let active = false;
-
-                results.forEach(val => {
-                    if (val) {
-                        const n = parseInt(val.trim());
-                        if (!isNaN(n)) { count += n; active = true; }
-                    }
-                });
-
-                if (count > LIMIT) count = LIMIT;
-                total += count;
-                if(active) activeServers++;
-
-                const percent = Math.round((count / LIMIT) * 100);
-                
-                // Color Logic
-                let color = 'var(--success)';
-                let statusText = 'ONLINE';
-                let statusColor = 'var(--success)';
-                
-                if (percent > 90) { 
-                    color = 'var(--danger)'; 
-                    statusText = 'FULL';
-                    statusColor = 'var(--danger)';
-                } else if (percent > 70) { 
-                    color = 'var(--warning)';
-                    statusText = 'BUSY';
-                    statusColor = 'var(--warning)';
-                }
-                
-                if (!active) {
-                    color = '#333';
-                    statusText = 'OFFLINE';
-                    statusColor = '#666';
-                }
-
-                // Update UI Element
-                const el = document.getElementById(srv.id);
-                if (el) {
-                    if(active) el.classList.add('active-server');
-                    else el.classList.remove('active-server');
-
-                    el.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-hdd-fill me-2" style="color: ${active ? color : '#333'}"></i>
-                                <span class="server-name">${srv.name}</span>
-                            </div>
-                            <span class="status-badge" style="color: ${statusColor}; border: 1px solid ${statusColor}40">
-                                ${statusText}
-                            </span>
-                        </div>
-
-                        <div class="cyber-progress">
-                            <div class="cyber-bar" style="width: ${percent}%; background-color: ${color}; box-shadow: 0 0 10px ${color}"></div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-2 align-items-center">
-                            <span class="ping-indicator"><i class="bi bi-people-fill"></i> ${count}/${LIMIT}</span>
-                            <span style="font-family: 'Chakra Petch'; font-weight: bold; color: ${color}">${percent}%</span>
-                        </div>
-                    `;
-                }
+            let activeCount = 0;
+            
+            Object.values(serverValues).forEach(val => {
+                total += val;
+                if(val > 0) activeCount++;
             });
 
-            await Promise.all(tasks);
-            
-            // Animate Number
-            const counter = document.getElementById('totalOnlineCount');
-            counter.innerText = total;
-            counter.style.color = total > 0 ? 'var(--text-main)' : '#666';
+            // Update Total UI
+            const totalEl = document.getElementById('totalOnlineCount');
+            totalEl.innerText = total;
+            totalEl.style.color = total > 0 ? 'var(--text-main)' : '#666';
 
-            // System Status Update
+            // Update System Status
             const statusEl = document.getElementById('systemStatus');
-            if(activeServers > 0) {
+            if(activeCount > 0) {
                 statusEl.innerHTML = '<i class="bi bi-activity"></i> SYSTEM OPTIMAL';
                 statusEl.style.color = 'var(--success)';
             } else {
                 statusEl.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ALL SERVERS OFFLINE';
                 statusEl.style.color = 'var(--danger)';
             }
+        }
+
+        async function processServer(srv) {
+            const results = await Promise.all(srv.urls.map(u => apiFetch(u)));
             
+            let count = 0;
+            let active = false;
+
+            results.forEach(val => {
+                if (val !== null) { count += val; active = true; }
+            });
+
+            if (count > LIMIT) count = LIMIT;
+
+            // SAVE TO STATE (Crucial Step)
+            serverValues[srv.id] = count;
+            
+            // Trigger UI Recalculation Immediately
+            recalculateTotal();
+
+            // Calculate Card Percent
+            const percent = Math.round((count / LIMIT) * 100);
+            
+            // Color Logic
+            let color = 'var(--success)';
+            let statusText = 'ONLINE';
+            let statusColor = 'var(--success)';
+            
+            if (percent > 90) { 
+                color = 'var(--danger)'; statusText = 'FULL'; statusColor = 'var(--danger)';
+            } else if (percent > 70) { 
+                color = 'var(--warning)'; statusText = 'BUSY'; statusColor = 'var(--warning)';
+            }
+            
+            if (!active) {
+                // If fetch failed completely, we keep it as 0
+                color = '#333'; statusText = 'OFFLINE'; statusColor = '#666';
+            }
+
+            // Update Card UI
+            const el = document.getElementById(srv.id);
+            if (el) {
+                if(active) el.classList.add('active-server');
+                else el.classList.remove('active-server');
+
+                el.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-hdd-fill me-2" style="color: ${active ? color : '#333'}"></i>
+                            <span class="server-name">${srv.name}</span>
+                        </div>
+                        <span class="status-badge" style="color: ${statusColor}; border: 1px solid ${statusColor}40">
+                            ${statusText}
+                        </span>
+                    </div>
+                    <div class="cyber-progress">
+                        <div class="cyber-bar" style="width: ${percent}%; background-color: ${color}; box-shadow: 0 0 10px ${color}"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2 align-items-center">
+                        <span class="ping-indicator"><i class="bi bi-people-fill"></i> ${count}/${LIMIT}</span>
+                        <span style="font-family: 'Chakra Petch'; font-weight: bold; color: ${color}">${percent}%</span>
+                    </div>
+                `;
+            }
+        }
+
+        let isRefreshing = false;
+
+        async function refresh() {
+            if(isRefreshing) return;
+            isRefreshing = true;
+            
+            // Start Loading UI (But do NOT reset Total to 0)
+            document.getElementById('refreshBtn').classList.add('loading');
+            document.getElementById('refreshIcon').classList.add('spin-anim');
+            
+            // Update Text to indicate refresh
+            const statusEl = document.getElementById('systemStatus');
+            const prevText = statusEl.innerHTML;
+            statusEl.innerHTML = '<i class="bi bi-hourglass-split"></i> UPDATING...';
+
+            initLayout(); 
+            
+            // Fetch All Parallely
+            const tasks = servers.map(srv => processServer(srv));
+            await Promise.all(tasks);
+            
+            // Finished
             document.getElementById('lastUpdated').innerText = 'LAST SYNC: ' + new Date().toLocaleTimeString().toUpperCase();
-            startTimer();
-        }
-
-        let timer;
-        function startTimer() {
-            let s = 3;
-            const el = document.getElementById('refreshTimer');
-            if(timer) clearInterval(timer);
-            el.innerText = s; // Show initial time
             
-            timer = setInterval(() => {
-                s--;
-                el.innerText = s;
-                if(s <= 0) {
-                    clearInterval(timer);
-                    refresh();
-                }
-            }, 1000);
+            document.getElementById('refreshBtn').classList.remove('loading');
+            document.getElementById('refreshIcon').classList.remove('spin-anim');
+            isRefreshing = false;
         }
 
-        // Start immediately
+        function manualRefresh() { refresh(); }
+
+        // Initial Run
         refresh();
+        // Auto Loop
+        setInterval(refresh, 5000); 
         
     </script>
 </body>
