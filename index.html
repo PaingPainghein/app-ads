@@ -1,358 +1,234 @@
-<?php
-header('Content-Type: text/html; charset=UTF-8');
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PPH GOOD VPN | Status</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    
+    <title>PPH GOOD VPN</title>
+    <meta name="theme-color" content="#0d6efd">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
     <style>
-        :root {
-            --bg-dark: #0b1120;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --glass-bg: rgba(30, 41, 59, 0.4);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.03);
-            --primary-accent: #38bdf8;
-            --success: #22c55e;
-            --warning: #eab308;
-            --danger: #ef4444; /* Red Color for Offline */
-        }
-
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            padding-bottom: 50px;
-            font-size: 14px;
+            padding-bottom: 80px;
+            line-height: 1.6;
         }
 
-        .bg-blob {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(60px);
-            z-index: -1;
-            opacity: 0.3;
-        }
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: #4f46e5; }
-        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #0ea5e9; }
-
-        .navbar {
-            background: rgba(11, 17, 32, 0.5); 
-            backdrop-filter: blur(10px);
-            border-bottom: var(--glass-border);
-            position: sticky; top: 0; z-index: 1000;
-            padding: 8px 0;
-        }
-        .navbar-brand { font-weight: 700; color: var(--text-main) !important; font-size: 1rem; }
-        .nav-link { color: var(--text-muted) !important; font-size: 0.85rem; }
-        .nav-link.active { color: var(--primary-accent) !important; }
-
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            margin-bottom: 16px;
+        .navbar, .bottom-nav {
+            background: #1e293b !important;
+            border-color: rgba(255,255,255,0.12);
         }
 
-        .stats-wrapper { text-align: center; padding: 10px 0; }
-        .stats-label { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
-        .total-number {
-            font-size: 2.5rem;
+        .navbar-brand span {
+            color: #0d6efd;
             font-weight: 700;
-            line-height: 1;
-            background: linear-gradient(135deg, #fff 0%, var(--primary-accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
         }
-        
-        .server-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+
+        .logo-img {
+            width: 96px;
+            filter: drop-shadow(0 0 20px rgba(13,110,253,0.5));
+            transition: 0.3s;
+        }
+        .logo-img:hover {
+            transform: scale(1.07);
+        }
+
+        .download-btn {
+            background: linear-gradient(90deg, #0d6efd 60%, #32cafe 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+        }
+        .download-btn:hover {
+            background: linear-gradient(90deg, #32cafe 30%, #0d6efd 100%);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            padding: 8px 0;
+            z-index: 1030;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+        }
+        .bottom-nav .nav-link {
+            color: #e2e8f0 !important;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 6px 0;
             border-radius: 10px;
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            transition: all 0.2s ease;
         }
-        .server-item:hover { background: rgba(255, 255, 255, 0.06); transform: translateY(-1px); }
-
-        .server-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        
-        .flag-icon { width: 20px; border-radius: 3px; margin: 0 8px; }
-        .server-name { font-weight: 600; font-size: 0.85rem; color: #f1f5f9; }
-        
-        .dot-box { position: relative; width: 8px; height: 8px; display: flex; align-items: center; justify-content: center; }
-        .dot-main { width: 6px; height: 6px; border-radius: 50%; z-index: 2; }
-        .dot-ping { position: absolute; width: 100%; height: 100%; border-radius: 50%; opacity: 0.6; animation: ping 1.5s infinite; }
-        @keyframes ping { 0% {transform: scale(1); opacity: 0.6;} 100% {transform: scale(2.5); opacity: 0;} }
-
-        .info-row { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
-        .progress-track { height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
-
-        .download-card {
-            background: linear-gradient(160deg, rgba(56, 189, 248, 0.1), rgba(15, 23, 42, 0.6));
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            text-align: center;
-            padding: 15px;
+        .bottom-nav .nav-link.active {
+            color: #32cafe !important;
+            background: rgba(50,202,254,0.25);
+            font-weight: 700;
         }
-        .app-icon { width: 50px; height: 50px; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-        .btn-install {
-            background: var(--text-main); color: var(--bg-dark);
-            font-weight: 700; border: none; padding: 8px; border-radius: 8px; width: 100%;
-            text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;
-            margin-top: 10px;
+        .bottom-nav i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 3px;
         }
 
-        .fab {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 45px; height: 45px; border-radius: 50%;
-            background: var(--primary-accent); border: none;
-            color: var(--bg-dark); display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); z-index: 100;
-            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+        /* Footer & Features */
+        .footer {
+            background: #0f172a !important;
+            color: #cbd5e1;
         }
-        .fab:active { transform: scale(0.9); }
-        .spin-anim { animation: spin 0.8s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .skeleton { background: rgba(255, 255, 255, 0.05); border-radius: 4px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
-
+        .footer h5 {
+            color: #ffdd57;
+        }
+        .feature-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        .feature-icon {
+            color: #0d6efd;
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-blob blob-1"></div>
-    <div class="bg-blob blob-2"></div>
-
-    <nav class="navbar navbar-expand-lg">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN" style="width:36px;"></i>PPH GOOD VPN
+            <a class="navbar-brand" href="index.html">
+                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN" style="width:36px;">
+                <span>PPH GOOD VPN</span>
             </a>
-            <button class="navbar-toggler border-0 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
-                <i class="bi bi-list fs-3 text-white"></i>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navContent">
+            <div class="collapse navbar-collapse" id="nav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">HONE</a></li>
-                    <li class="nav-item"><a class="nav-link" href="guidesim.html">Guide</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-3" style="max-width: 450px;"> 
-        
-        <div class="glass-card stats-wrapper">
-            <div class="stats-label">Online Users</div>
-            <div class="total-number" id="totalOnlineCount">--</div>
-            <div class="d-flex justify-content-center align-items-center gap-2" style="color: var(--success); font-size: 0.8rem; font-weight: 500;" id="systemStatus">
-                <span class="dot-box">
-                  <span class="dot-ping" style="background: var(--success);"></span>
-                  <span class="dot-main" style="background: var(--success);"></span>
-                </span>
-                System Live
+    <main class="container py-5">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-12 col-md-8">
+                <img class="logo-img mb-3" src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN">
+                <h1 class="display-5 fw-bold" style="color:#0d6efd;">PPH GOOD VPN</h1>
+                <p class="lead mt-3">ထိုင်းရောက်ရွှေမြန်မာများတို့အတွက် အင်တာနက်ကို ကုန်ကျသက်သာစွာ အသုံးပြုနိုင်ရန်အတွက် PPH GOOD VPN APP ကိုဖန်တီးထားပါသည်။</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+                    <a href="https://play.google.com/store/apps/details?id=com.skphvpn.mm&hl=en" class="btn download-btn px-4 py-2">
+                        <i class="bi bi-download"></i> Download PPH GOOD VPN
+                    </a>
+                    <a href="https://www.facebook.com/share/v/1DDWShdco1/" class="btn btn-outline-primary px-4 py-2">
+                        <i class="bi bi-journal-code"></i> PPH GOOD VPN နဲ့  သုံးပြုနည်း
+                    </a>
+                </div>
             </div>
         </div>
 
-        <div class="glass-card p-0">
-            <div class="p-3 pb-2 border-bottom border-white border-opacity-10">
-                <h6 class="m-0 fw-bold text-white" style="font-size: 0.9rem;"><i class="bi bi-hdd-network me-2"></i>Servers</h6>
+        <footer class="footer py-4 text-light">
+            <div class="container">
+                <!-- Contact Section -->
+                <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <h5 class="mb-3 text-warning">
+                            <i class="bi bi-headset me-2"></i>
+                            Admin ကို ဆက်သွယ်ရန်
+                        </h5>
+                        <p class="mb-4" style="color: #cbd5e1;">မေးမြန်းလိုသည်များ ရှိပါက အောက်ပါလင့်များမှ ဆက်သွယ်နိုင်ပါသည်။</p>
+                       
+                        <div class="d-flex justify-content-center flex-wrap gap-3">
+                            <a href="https://www.facebook.com/pyingpying.hein.p"
+                               class="btn btn-outline-primary d-flex align-items-center gap-2"
+                               target="_blank">
+                                <i class="bi bi-facebook fs-5"></i>
+                                <span>Facebook Profile</span>
+                            </a>
+                           
+                            <a href="https://t.me/+OKhSfDjRIxlhMzhl"
+                               class="btn btn-outline-info d-flex align-items-center gap-2"
+                               target="_blank">
+                                <i class="bi bi-ONLINE fs-5"></i>
+                                <span>Telegram Group</span>
+
+<a href="https://pvpn.netlify.app/online" 
+   class="btn btn-outline-info d-flex align-items-center gap-2" 
+   target="_blank">
+    <i class="bi bi-globe fs-5"></i>
+    <span> Online Users ကြည့်ရန်</span>
+</a>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Features -->
+                <div class="row g-4 justify-content-center">
+                    <div class="col-12 text-center"><h3 class="fw-bold" style="color:#198754;">PVPN Features</h3></div>
+                    <div class="col-md-4 col-12">
+                        <div class="card h-100 text-center p-4 feature-card">
+                            <i class="bi bi-lightning-charge-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
+                            <h5 class="mt-3 fw-bold">Ultra Fast Speed</h5>
+                            <p>Experience high-speed connections for smooth browsing, streaming, and gaming.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <div class="card h-100 text-center p-4 feature-card">
+                            <i class="bi bi-shield-lock-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
+                            <h5 class="mt-3 fw-bold">Protect Your Privacy</h5>
+                            <p>Your online activity stays private & secure with strong encryption.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <div class="card h-100 text-center p-4 feature-card">
+                            <i class="bi bi-diagram-3-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
+                            <h5 class="mt-3 fw-bold">Multi-Protocol Support</h5>
+                            <p>SSH+WS, OVPN+WS, Hysteria, SlowDNS, V2Ray အကုန်ထောက်ပံ့ထားပါတယ်။</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="p-3" id="serverContainer"></div>
+        </footer>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col">
+                    <a href="index.html" class="nav-link active">
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>မူလ</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="guidesim.html" class="nav-link">
+                        <i class="bi bi-journal-code"></i>
+                        <span>ချိတ်နည်း</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="extendsim.html" class="nav-link">
+                        <i class="bi bi-phone-fill"></i>
+                        <span>ဆင်းမ်တိုး</span>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="https://www.facebook.com/pyingpying.hein.p" class="nav-link" target="_blank">
+                        <i class="bi bi-telegram"></i>
+                        <span>အကူအညီ</span>
+                    </a>
+                </div>
+            </div>
         </div>
-
-       
-
-        <div class="text-center mt-3 text-muted opacity-50" style="font-size: 0.65rem;">
-        <h6 class="m-0 fw-bold text-white" style="font-size: 0.9rem;">
-            BAMAR NETWORK INFRASTRUCTURE<br>
-            <span id="lastUpdated">Connecting...</span>
-        </div>
-
     </div>
 
-    <button class="fab" id="refreshBtn" onclick="manualRefresh()">
-        <i class="bi bi-arrow-clockwise"></i>
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const servers = [
-            { id: 'th-01', name: 'Thailand-01 SSH OVPN SSL', urls: ['http://freepvpn1.pphdev.shop:81/server/online'] },
-            { id: 'th-02', name: 'Thailand-02 SSH OVPN SSL', urls: ['http://free2.pphdev.shop:8888/server/online'] },
-            { id: 'th-03', name: 'Thailand-01 UDP', urls: ['http://freepvpn1.pphdev.shop/udpserver/online'] },
-            { id: 'th-05', name: 'Thailand-02 UDP', urls: ['http://free2.pphdev.shop/udpserver/online'] }
-        ];
-
-        const SERVER_USER_LIMIT = 250;
-        
-        const corsProxies = [
-            url => `https://corsproxy.io/?${encodeURIComponent(url)}`, 
-            url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-        ];
-
-        function getFlag(id) {
-            return `https://flagcdn.com/w40/${id.split('-')[0] || 'th'}.png`;
-        }
-
-        async function fetchUrlWithProxy(url) {
-            for (const proxyGen of corsProxies) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000); 
-                    const response = await fetch(proxyGen(url), { signal: controller.signal, headers: { 'Cache-Control': 'no-cache' } });
-                    clearTimeout(timeoutId);
-                    if (response.ok) return await response.text();
-                } catch (e) { continue; }
-            }
-            throw new Error("Failed");
-        }
-
-        function manualRefresh() {
-            const btn = document.getElementById('refreshBtn');
-            const icon = btn.querySelector('i');
-            const statusText = document.getElementById('systemStatus');
-            
-            icon.classList.add('spin-anim');
-            statusText.innerHTML = '<span class="spinner-border spinner-border-sm text-info me-2" style="width:0.8rem; height:0.8rem;"></span> Updating...';
-            
-            updateDashboard().then(() => {
-                setTimeout(() => {
-                    icon.classList.remove('spin-anim');
-                    statusText.innerHTML = `
-                        <span class="dot-box">
-                          <span class="dot-ping" style="background: var(--success);"></span>
-                          <span class="dot-main" style="background: var(--success);"></span>
-                        </span>
-                        System Live
-                    `;
-                }, 500);
-            });
-        }
-
-        async function updateDashboard() {
-            const container = document.getElementById('serverContainer');
-            const totalEl = document.getElementById('totalOnlineCount');
-            
-            if(container.children.length === 0) {
-                container.innerHTML = servers.map(s => `
-                    <div class="server-item" id="row-${s.id}">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="skeleton" style="width: 16px; height: 16px; border-radius: 50%;"></div>
-                            <div class="skeleton ms-2" style="width: 80px; height: 14px;"></div>
-                        </div>
-                        <div class="skeleton" style="width: 100%; height: 4px;"></div>
-                    </div>
-                `).join('');
-            }
-
-            let globalTotal = 0;
-
-            const promises = servers.map(async (server) => {
-                const rowId = `row-${server.id}`;
-                let rowEl = document.getElementById(rowId);
-                if (!rowEl) return;
-
-                try {
-                    const results = await Promise.allSettled(server.urls.map(u => fetchUrlWithProxy(u)));
-                    let onlineCount = 0;
-                    let isOnline = false;
-
-                    results.forEach(res => {
-                        if(res.status === 'fulfilled') {
-                            const num = parseInt(res.value, 10);
-                            if(!isNaN(num)) { onlineCount += num; isOnline = true; }
-                        }
-                    });
-
-                    if (!isOnline) throw new Error("Offline");
-                    if (onlineCount > SERVER_USER_LIMIT) onlineCount = SERVER_USER_LIMIT;
-                    globalTotal += onlineCount;
-
-                    const fakePing = Math.floor(Math.random() * (120 - 45 + 1) + 45); 
-                    const percent = Math.round((onlineCount / SERVER_USER_LIMIT) * 100);
-                    
-                    let color = 'var(--success)';
-                    if(percent > 90) color = 'var(--danger)'; 
-                    else if(percent > 70) color = 'var(--warning)';
-
-                    rowEl.innerHTML = `
-                        <div class="server-top">
-                            <div class="d-flex align-items-center">
-                                <span class="dot-box">
-                                    <span class="dot-ping" style="background: ${color};"></span>
-                                    <span class="dot-main" style="background: ${color}; box-shadow: 0 0 8px ${color};"></span>
-                                </span>
-                                <img src="${getFlag(server.id)}" class="flag-icon">
-                                <span class="server-name">${server.name}</span>
-                            </div>
-                            <span class="badge bg-black bg-opacity-25 text-white border border-white border-opacity-10 rounded-pill px-2 fw-normal" style="font-size: 0.7rem;">
-                                ${fakePing}ms
-                            </span>
-                        </div>
-                        <div class="info-row">
-                            <span>${onlineCount} / ${SERVER_USER_LIMIT} Users</span>
-                            <span>${percent}%</span>
-                        </div>
-                        <div class="progress-track">
-                            <div class="progress-fill" style="width: ${percent}%; background-color: ${color}; box-shadow: 0 0 10px ${color};"></div>
-                        </div>
-                    `;
-
-                } catch (error) {
-                    // OFFLINE STATE (RED TEXT & NAME)
-                    rowEl.innerHTML = `
-                        <div class="server-top">
-                            <div class="d-flex align-items-center">
-                                <span class="dot-main" style="background: var(--danger);"></span>
-                                <img src="${getFlag(server.id)}" class="flag-icon grayscale">
-                                <span class="server-name" style="color: var(--danger);">${server.name}</span>
-                            </div>
-                            <span class="badge bg-danger text-white border border-danger border-opacity-25 rounded-pill px-2 fw-normal" style="font-size: 0.65rem;">OFFLINE</span>
-                        </div>
-                    `;
-                }
-            });
-
-            await Promise.allSettled(promises);
-            const currentObj = parseInt(totalEl.innerText) || 0;
-            animateValue(totalEl, currentObj, globalTotal, 1000);
-            
-            const now = new Date();
-            document.getElementById('lastUpdated').innerText = 'Last updated: ' + now.toLocaleTimeString('en-US', { hour12: false });
-        }
-
-        function animateValue(obj, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) { window.requestAnimationFrame(step); }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        updateDashboard();
-        setInterval(updateDashboard, 20000); 
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
