@@ -9,9 +9,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pyidaungsu:wght@400;700&family=Inter:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #0d6efd;
+            --accent: #32cafe;
+            --text-main: #e2e8f0;
+            --text-sub: #94a3b8;
+        }
+
         body {
-            background: #0f172a;
-            color: #e2e8f0;
+            background: var(--bg-dark);
+            color: var(--text-main);
             font-family: 'Pyidaungsu', 'Inter', sans-serif;
             padding-bottom: 100px;
             min-height: 100dvh;
@@ -19,214 +28,144 @@
 
         /* Navbar */
         .navbar {
-            background: #1e293b !important;
+            background: rgba(30, 41, 59, 0.95) !important;
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
         .navbar-brand {
             font-weight: 700;
-            font-size: 1.35rem;
-            color: #0d6efd !important;
+            font-size: 1.2rem;
+            color: var(--primary) !important;
         }
 
         /* Product Card */
         .product-card {
-            background: #1e293b;
-            border-radius: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            height: 340px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
         .product-card:hover {
-            transform: translateY(-12px) scale(1.03);
-            box-shadow: 0 28px 56px rgba(13,110,253,0.35);
-            border-color: #0d6efd;
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
         }
-        .product-price {
+        
+        .price-tag {
             position: absolute;
-            top: 12px; right: 12px;
-            background: linear-gradient(135deg, #ff6b6b, #ffa726);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.82rem;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #FFC107, #FF9800);
+            color: #000;
             font-weight: bold;
-            z-index: 10;
-            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
-        }
-        .product-image {
-            height: 68%;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.8));
-        }
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 20px;
-            transition: transform 0.6s ease;
-        }
-        .product-card:hover .product-image img {
-            transform: scale(1.18) rotate(3deg);
-        }
-        .product-info {
-            height: 32%;
-            padding: 16px;
-            text-align: center;
-            background: linear-gradient(to top, rgba(255,255,255,0.15), transparent);
-            display: flex;
-            flex-direction: column;
-            justify-content: end;
-        }
-        .product-title {
-            font-size: 1.28rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #0d6efd, #32cafe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        .product-subtitle {
-            font-size: 0.92rem;
-            color: #a0d8ff;
-            margin-top: 4px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-        }
-
-        /* Download Card */
-        .download-card {
-            max-width: 420px;
-            margin: 3rem auto;
-            background: linear-gradient(135deg, #0d6efd 0%, #32cafe 100%);
-            color: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(13, 110, 253, 0.5);
-            overflow: hidden;
-        }
-        .download-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 35px 70px rgba(13, 110, 253, 0.6);
-        }
-        .app-icon {
-            width: 90px;
-            height: 90px;
+            font-size: 0.75rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            border: 4px solid rgba(255,255,255,0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        }
-        .btn-download {
-            background: white;
-            color: #0d6efd;
-            font-weight: 600;
-            padding: 0.9rem 2rem;
-            border-radius: 50px;
-            font-size: 1.15rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .btn-download:hover {
-            background: #f8f9fa;
-            transform: translateY(-2px);
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* Package Full Screen */
-        .package-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0a0a0f 0%, #16213e 100%);
-            z-index: 2000;
-            display: none;
+        .card-img-wrapper {
+            height: 160px;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .card-img-wrapper img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover .card-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .card-body {
+            padding: 15px;
+            display: flex;
             flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-            color: white;
+            flex-grow: 1;
         }
-        .package-screen.active {
-            display: flex;
-            animation: fadeIn 0.4s ease;
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .package-header {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        .card-text {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 15px;
         }
-        .package-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #0d6efd, #32cafe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .close-btn {
-            width: 50px; height: 50px;
-            background: rgba(255,255,255,0.15);
+
+        .btn-action {
+            margin-top: auto;
+            border-radius: 50px;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             border: none;
-            border-radius: 50%;
             color: white;
-            font-size: 1.9rem;
-            display: grid;
-            place-items: center;
-            transition: 0.3s;
+            width: 100%;
+            padding: 8px 0;
+            transition: opacity 0.2s;
         }
-        .close-btn:hover { background: rgba(255,255,255,0.3); }
-        .package-item {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.3s;
-        }
-        .package-item:hover {
-            background: rgba(13,110,253,0.25);
-            transform: translateX(8px);
+        .btn-action:hover {
+            opacity: 0.9;
+            color: white;
         }
 
         /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: #1e293b;
+            background: var(--card-bg);
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 12px 0;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            padding: 10px 0;
             z-index: 1000;
         }
         .bottom-nav .nav-link {
-            color: #94a3b8;
-            font-weight: 600;
-            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
         .bottom-nav .nav-link.active {
-            color: #0d6efd;
+            color: var(--primary);
         }
         .bottom-nav i {
-            font-size: 1.6rem;
-            display: block;
+            font-size: 1.4rem;
+        }
+
+        /* Loading Spinner */
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            padding: 50px 0;
+            color: var(--primary);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
-                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN" width="38" height="38">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="Logo" width="32" height="32" class="rounded-circle">
                 PPH GOOD VPN
             </a>
         </div>
@@ -234,204 +173,25 @@
 
     <div class="container pt-5 mt-5">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold" style="background: linear-gradient(90deg,#0d6efd,#32cafe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                အင်တာနက်ဖရီး စမတ်နည်း
-            </h2>
-            <p class="fs-5" style="color: #94a3b8;">သင့်ဆင်းမ်နဲ့ အဆင်ပြေဆုံး ပက်ကေ့ကို ရွေးချယ်ပါ</p>
+            <h4 class="fw-bold bg-gradient-text" style="background: linear-gradient(90deg,#0d6efd,#32cafe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                အင်တာနက်ဖရီး စမတ်နည်းများ
+            <h4 class="fw-bold bg-gradient-text" style="background: linear-gradient(90deg,#0d6efd,#32cafe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <p class="small text-muted">အသက်သာဆုံး နှင့် အကောင်းဆုံး Package များ</p>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            <!-- Dtac Jaidee -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('dtacjaidee')">
-                    <div class="product-price">အသက်သာဆုံး</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphtruedtac.png" alt="Dtac">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">Dtac True Jaidee</div>
-                        <div class="product-subtitle">စျေးသက်သာဆုံး</div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dtac Gaming -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('dtacgaming')">
-                    <div class="product-price">အမြန်ဆုံး</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphdtac.png" alt="Dtac">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">Dtac Gaming</div>
-                        <div class="product-subtitle">၉၀ ရက် 61 ဘတ်</div>
-                    </div>
-                </div>
-            </div>
-            <!-- True Twitter -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('truetwitter')">
-                    <div class="product-price">တည်ငြိမ်ဆုံး</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphtrue.png" alt="True">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">True Twitter</div>
-                        <div class="product-subtitle">၅၄ ဘတ် / ၃၀ ရက်</div>
-                    </div>
-                </div>
-            </div>
-            <!-- True VDO -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('truevdo')">
-                    <div class="product-price">ဗီဒီယိုကြည့်ရင် /  ဂိမ်းအကုန်ဆော့လို့ရမယ်</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphtrue.png" alt="True">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">True VDO</div>
-                        <div class="product-subtitle">၈၅ ဘတ် / ၃၀ ရက်</div>
-                    </div>
-                </div>
-            </div>
-            <!-- True Viber -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('trueviber')">
-                    <div class="product-price">ချက်တင်အတွက်</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphtrue.png" alt="True">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">True Viber</div>
-                        <div class="product-subtitle">၅၃ ဘတ် / ၃၀ ရက်</div>
-                    </div>
-                </div>
-            </div>
-            <!-- AIS 128kbps -->
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="product-card" onclick="openPackage('ais')">
-                    <div class="product-price">အချိုဆုံး / ဂိမ်းအကုန်ဆော့လို့ရမယ်</div>
-                    <div class="product-image">
-                        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/pphais.png" alt="AIS">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">AIS 128kbps</div>
-                        <div class="product-subtitle">၃၆ ဘတ်</div>
-                    </div>
+        <div class="row g-3" id="packageContainer">
+            <div class="spinner-container">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
 
-        <!-- Download Card -->
-        <div class="download-card card border-0 mt-5">
-            <div class="card-body text-center py-5">
-                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw"
-                     alt="PVPN" class="app-icon mx-auto d-block mb-4">
-                <h5 class="fw-bold fs-4">PPH GOOD VPN မရှိသေးရင် အခုပဲ ဒေါင်းပါ</h5>
-                <a href="https://play.google.com/store/apps/details?id=com.skphvpn.mm&hl=en" target="_blank"
-                   class="btn btn-download btn-lg w-100 mt-4">
-                    Play Store မှ ဒေါင်းရန်
-                </a>
-            </div>
-        </div>
-    </div>
+        
 
-   <!-- Package Details (Full Screen) -->
-<div id="dtacjaideeScreen" class="package-screen">
-    <div class="package-header">
-        <h3 class="package-title">Dtac Jaidee</h3>
-        <button class="close-btn" onclick="closePackage()">×</button>
-    </div>
-    
-    <div class="package-item">
-        <span>Dtac ၃၀ ရက် (၃၀ ဘတ်)</span>
-        <a href="tel:*117*30%23" class="btn btn-primary">ဖုန်းခေါ်ရန်</a>
-    </div>
-    
-    <div class="package-item">
-        <span>True ၃၀ ရက် (၃၂ ဘတ်)</span>
-        <a href="tel:*900*8131%23" class="btn btn-primary">ဖုန်းခေါ်ရန်</a>
-    </div>
-    <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/udp.png" class="img-fluid rounded mt-3" alt="Jaidee Guide">
-</div>
-
-    <div id="dtacgamingScreen" class="package-screen">
-        <div class="package-header">
-            <h3 class="package-title">Dtac Gaming</h3>
-            <button class="close-btn" onclick="closePackage()">×</button>
-        </div>
-        <div class="package-item">
-            <span>၉၀ ရက် (၆၁ ဘတ်)</span>
-            <a href="https://app.dtac.co.th/login" target="_blank" class="btn btn-primary">ဝယ်ရန်</a>
-        </div>
-        <div class="row g-3 mt-3">
-            <div class="col-6"><img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming1.jpg" class="img-fluid rounded"></div>
-            <div class="col-6"><img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming2.jpg" class="img-fluid rounded"></div>
-            <div class="col-6"><img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming3.jpg" class="img-fluid rounded"></div>
-            <div class="col-6"><img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming4.jpg" class="img-fluid rounded"></div>
-        </div>
-    </div>
-
-    <div id="truetwitterScreen" class="package-screen">
-        <div class="package-header">
-            <h3 class="package-title">True Twitter</h3>
-            <button class="close-btn" onclick="closePackage()">×</button>
-        </div>
-        <div class="package-item">
-            <span>၃၀ ရက် (၅၄ ဘတ်)</span>
-            <a href="tel:*900*3509%23" class="btn btn-danger">ဖုန်းခေါ်ရန်</a>
-        </div>
-        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/tw.png" class="img-fluid rounded mt-3" alt="Twitter">
-    </div>
-
-    <div id="truevdoScreen" class="package-screen">
-        <div class="package-header">
-            <h3 class="package-title">True VDO</h3>
-            <button class="close-btn" onclick="closePackage()">×</button>
-        </div>
-        <div class="package-item">
-            <span>၃၀ ရက် (၈၅ ဘတ်)</span>
-            <a href="tel:*900*8234%23" class="btn btn-danger">ဖုန်းခေါ်ရန်</a>
-        </div>
-        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/vdo.png" class="img-fluid rounded mt-3" alt="VDO">
-    </div>
-
-    <div id="trueviberScreen" class="package-screen">
-        <div class="package-header">
-            <h3 class="package-title">True Viber</h3>
-            <button class="close-btn" onclick="closePackage()">×</button>
-        </div>
-        <div class="package-item">
-            <span>၃၀ ရက် (၅၃ ဘတ်)</span>
-            <a href="tel:*900*3809%23" class="btn btn-danger">ဖုန်းခေါ်ရန်</a>
-        </div>
-        <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/viber.png" class="img-fluid rounded mt-3" alt="Viber">
-    </div>
-
-    <div id="aisScreen" class="package-screen">
-        <div class="package-header">
-            <h3 class="package-title">AIS 128kbps</h3>
-            <button class="close-btn" onclick="closePackage()">×</button>
-        </div>
-        <div class="package-item">
-            <span>တစ်လစာ အင်တာနက်ဖရီး (၃၆ ဘတ်)</span>
-            <a href="tel:*777*7068%23" class="btn btn-success btn-lg">ဖုန်းခေါ်ရန်</a>
-        </div>
-        <div class="text-center mt-4">
-            <img src="https://raw.githubusercontent.com/PaingPainghein/app-ads/refs/heads/main/img/ais.png"
-                 class="img-fluid rounded shadow-lg"
-                 style="max-height: 520px; border: 5px solid #00d4aa; border-radius: 24px;"
-                 alt="AIS 128kbps အသုံးပြုနည်း">
-        </div>
-        <div class="alert alert-info mt-4 text-center fs-5 rounded-pill py-4 bg-gradient" style="background: linear-gradient(135deg, #00d4aa, #00b894);">
-            <strong class="text-white">ဒီပက်ကေ့တစ်ခုတည်းနဲ့ အားလုံးအဆင်ပြေ!</strong><br>
-            <span class="text-white opacity-90">PVPN နဲ့တွဲသုံးရင် ဗီဒီယိုပါ ကြည်ကြည်လင်လင် ကြည့်လို့ရပါတယ်</span>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="container">
-            <div class="row text-center">
+            <div class="row">
                 <div class="col">
                     <a href="index.html" class="nav-link">
                         <i class="bi bi-house-door-fill"></i>
@@ -439,21 +199,21 @@
                     </a>
                 </div>
                 <div class="col">
-                    <a href="guidesim.html" class="nav-link active">
-                        <i class="bi bi-journal-code"></i>
-                        <span>ချိတ်နည်း</span>
+                    <a href="#" class="nav-link active">
+                        <i class="bi bi-gift-fill"></i>
+                        <span>Smart</span>
                     </a>
                 </div>
                 <div class="col">
                     <a href="extendsim.html" class="nav-link">
-                        <i class="bi bi-phone-fill"></i>
+                        <i class="bi bi-sim-fill"></i>
                         <span>ဆင်းမ်တိုး</span>
                     </a>
                 </div>
                 <div class="col">
                     <a href="https://t.me/+OKhSfDjRIxlhMzhl" target="_blank" class="nav-link">
                         <i class="bi bi-telegram"></i>
-                        <span>အကူအညီ</span>
+                        <span>Contact</span>
                     </a>
                 </div>
             </div>
@@ -461,17 +221,66 @@
     </div>
 
     <script>
-        function openPackage(id) {
-            document.getElementById(id + 'Screen').classList.add('active');
-        }
-        function closePackage() {
-            document.querySelectorAll('.package-screen').forEach(s => s.classList.remove('active'));
-        }
-        document.querySelectorAll('.package-screen').forEach(screen => {
-            screen.addEventListener('click', e => {
-                if (e.target === screen) closePackage();
+        const jsonUrl = 'https://raw.githubusercontent.com/PaingPainghein/webapi/refs/heads/main/online.json';
+        const container = document.getElementById('packageContainer');
+
+        // Fetch data from GitHub
+        fetch(jsonUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(packages => {
+                // Clear loading spinner
+                container.innerHTML = '';
+
+                packages.forEach(pkg => {
+                    // Check if the link is USSD (starts with *) or Web link
+                    // And handle the '#' encoding for USSD
+                    let finalLink = pkg.link;
+                    let isUssd = false;
+
+                    if (pkg.link.startsWith('*') || pkg.link.startsWith('tel:')) {
+                        isUssd = true;
+                        if (!pkg.link.startsWith('tel:')) {
+                            // If it is *123#, convert to tel:*123%23 for proper dialing
+                            finalLink = 'tel:' + pkg.link.replace(/#/g, '%23');
+                        }
+                    }
+
+                    const btnText = isUssd ? "ဖုန်းခေါ်ယူရန်" : "ဝယ်ယူရန်";
+                    const btnIcon = isUssd ? "bi-telephone-fill" : "bi-cart-fill";
+                    const target = isUssd ? "" : `target="_blank"`;
+                    
+                    // Default tag if not present in JSON
+                    const tagLabel = pkg.tag ? pkg.tag : "Promotion";
+
+                    const html = `
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="product-card">
+                                <span class="price-tag">${tagLabel}</span>
+                                <div class="card-img-wrapper">
+                                    <img src="${pkg.image}" alt="${pkg.name}" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate">${pkg.name}</h5>
+                                    <p class="card-text">${pkg.price}</p>
+                                    <a href="${finalLink}" ${target} class="btn btn-action shadow-sm">
+                                        <i class="bi ${btnIcon} me-1"></i> ${btnText}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                container.innerHTML = '<div class="text-center text-danger">Data ဆွဲယူ၍မရပါ (Internet Connection စစ်ဆေးပါ)</div>';
             });
-        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
