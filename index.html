@@ -12,101 +12,151 @@
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: radial-gradient(circle at top left, #1e1b4b, transparent 50%),
+                        radial-gradient(circle at bottom right, #0f172a, transparent 50%),
+                        linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+            background-attachment: fixed;
             color: #f1f5f9;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
             line-height: 1.6;
         }
 
-        .navbar, .bottom-nav {
-            background: #1e293b !important;
-            border-color: rgba(255,255,255,0.12);
+        /* Glassmorphism Navbar */
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .navbar-brand span {
-            color: #0d6efd;
+            color: #38bdf8;
             font-weight: 700;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
         }
 
         .logo-img {
             width: 96px;
-            filter: drop-shadow(0 0 20px rgba(13,110,253,0.5));
-            transition: 0.3s;
+            filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.6));
+            transition: transform 0.3s ease, filter 0.3s ease;
         }
         .logo-img:hover {
-            transform: scale(1.07);
+            transform: scale(1.08) rotate(2deg);
+            filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.8));
         }
 
+        /* Glassmorphism Button */
         .download-btn {
-            background: linear-gradient(90deg, #0d6efd 60%, #32cafe 100%);
-            border: none;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.8), rgba(50, 202, 254, 0.8));
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             font-weight: 600;
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+            transition: all 0.3s ease;
         }
         .download-btn:hover {
-            background: linear-gradient(90deg, #32cafe 30%, #0d6efd 100%);
+            background: linear-gradient(135deg, rgba(50, 202, 254, 0.9), rgba(13, 110, 253, 0.9));
+            box-shadow: 0 10px 25px rgba(50, 202, 254, 0.5);
+            color: #fff;
+            transform: translateY(-2px);
         }
 
-        /* Bottom Navigation */
+        .glass-btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .glass-btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Glass Feature Card */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #f1f5f9;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.2);
+        }
+
+        .feature-icon {
+            color: #38bdf8;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+        }
+
+        /* Glass Footer Container */
+        .glass-footer {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px 20px;
+        }
+
+        /* Glass Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #1e293b;
-            border-top: 1px solid rgba(255,255,255,0.12);
-            padding: 8px 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
             z-index: 1030;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.5);
         }
         .bottom-nav .nav-link {
-            color: #e2e8f0 !important;
+            color: #94a3b8 !important;
             font-size: 0.8rem;
             font-weight: 500;
             padding: 6px 0;
-            border-radius: 10px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
         }
         .bottom-nav .nav-link.active {
-            color: #32cafe !important;
-            background: rgba(50,202,254,0.25);
+            color: #38bdf8 !important;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             font-weight: 700;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
         }
         .bottom-nav i {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             display: block;
-            margin-bottom: 3px;
-        }
-
-        /* Footer & Features */
-        .footer {
-            background: #0f172a !important;
-            color: #cbd5e1;
-        }
-        .footer h5 {
-            color: #ffdd57;
-        }
-        .feature-card {
-            background: rgba(30, 41, 59, 0.85);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f1f5f9;
-        }
-        .feature-icon {
-            color: #0d6efd;
+            margin-bottom: 2px;
         }
     </style>
 </head>
 <body>
 
     <!-- Top Navbar -->
-    <nav class="navbar navbar-expand-lg shadow-sm">
+    <nav class="navbar navbar-expand-lg glass-nav sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN" style="width:36px;">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <img src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN" style="width:36px; border-radius: 8px;">
                 <span>PPH GOOD VPN</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
             </button>
             <div class="collapse navbar-collapse" id="nav">
                 <ul class="navbar-nav ms-auto">
@@ -116,81 +166,82 @@
     </nav>
 
     <main class="container py-5">
+        <!-- Hero Section -->
         <div class="row justify-content-center text-center mb-5">
             <div class="col-12 col-md-8">
                 <img class="logo-img mb-3" src="https://play-lh.googleusercontent.com/tUt7o9JtLGGEzSo6kOXdJ8MpYAGhBUYEV2yoIGn4jtVA4WNQPfksB5ze8E29WpcrOdTgMVxuDygxFvtATiWS=w240-h480-rw" alt="PVPN">
-                <h1 class="display-5 fw-bold" style="color:#0d6efd;">PPH GOOD VPN</h1>
-                <p class="lead mt-3">ထိုင်းရောက်ရွှေမြန်မာများတို့အတွက် အင်တာနက်ကို ကုန်ကျသက်သာစွာ အသုံးပြုနိုင်ရန်အတွက် PPH GOOD VPN APP ကိုဖန်တီးထားပါတယ်။</p>
+                <h1 class="display-5 fw-bold" style="color:#38bdf8; text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);">PPH GOOD VPN</h1>
+                <p class="lead mt-3 text-light">ထိုင်းရောက်ရွှေမြန်မာများတို့အတွက် အင်တာနက်ကို ကုန်ကျသက်သာစွာ အသုံးပြုနိုင်ရန်အတွက် PPH GOOD VPN ကိုဖန်တီးထားပါတယ်။</p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
                     <a href="https://play.google.com/store/apps/details?id=com.skphvpn.mm&hl=en" class="btn download-btn px-4 py-2" target="_blank">
-    <i class="bi bi-google-play me-2"></i> Play Store Download PPH GOOD VPN
-</a>
+                        <i class="bi bi-google-play me-2"></i> Play Store Download PPH GOOD VPN
+                    </a>
                     
-                    <a href="https://www.facebook.com/share/r/1DmvXJa7PZ/" class="btn btn-outline-primary px-4 py-2" target="_blank">
-    <i class="bi bi-youtube me-2"></i> PPH GOOD VPN နဲ့ How to use
+                    <a href="https://www.facebook.com/share/r/1DmvXJa7PZ/" class="btn glass-btn-outline px-4 py-2" target="_blank">
+                        <i class="bi bi-facebook me-2 text-danger"></i> PPH GOOD VPN နဲ့ How to use
+                    </a>
+                    <a href="https://www.facebook.com/share/r/1DmvXJa7PZ/" class="btn glass-btn-outline px-4 py-2" target="_blank">
+    <i class="bi bi-gem me-2 text-info"></i> VIP အကောင့်ဝယ်ရန်
 </a>
                 </div>
-            </div>
+            </div> 
         </div>
 
-        <footer class="footer py-4 text-light">
+        <!-- Glass Footer & Features Section -->
+        <footer class="glass-footer text-light">
             <div class="container">
                 <!-- Contact Section -->
-                <div class="row mb-4">
+                <div class="row mb-5">
                     <div class="col-12 text-center">
-                        <h5 class="mb-3 text-warning">
+                        <h5 class="mb-3 text-warning fw-bold">
                             <i class="bi bi-headset me-2"></i>
-                           Contact Admin
+                            Contact Admin
                         </h5>
-                        <p class="mb-4" style="color: #cbd5e1;">If you have any questions, you can contact us through the links below.</p>
+                        <p class="mb-4 text-secondary">If you have any questions, you can contact us through the links below.</p>
                        
                         <div class="d-flex justify-content-center flex-wrap gap-3">
-                            <a href="https://www.facebook.com/pyingpying.hein.p"
-                               class="btn btn-outline-primary d-flex align-items-center gap-2"
-                               target="_blank">
-                                <i class="bi bi-facebook fs-5"></i>
+                            <a href="https://www.facebook.com/pyingpying.hein.p" class="btn glass-btn-outline d-flex align-items-center gap-2 px-3 py-2" target="_blank">
+                                <i class="bi bi-facebook fs-5 text-primary"></i>
                                 <span>Facebook Profile</span>
                             </a>
                            
-                            <a href="https://t.me/+OKhSfDjRIxlhMzhl"
-                               class="btn btn-outline-info d-flex align-items-center gap-2"
-                               target="_blank">
-                                <i class="bi bi-ONLINE fs-5"></i>
+                            <a href="https://t.me/+OKhSfDjRIxlhMzhl" class="btn glass-btn-outline d-flex align-items-center gap-2 px-3 py-2" target="_blank">
+                                <i class="bi bi-telegram fs-5 text-info"></i>
                                 <span>Telegram Group</span>
+                            </a>
 
-<a href="https://pvpn.netlify.app/online" 
-   class="btn btn-outline-info d-flex align-items-center gap-2" 
-   target="_blank">
-    <i class="bi bi-globe fs-5"></i>
-    <span> Online Users ကြည့်ရန်</span>
-</a>
-                                
+                            <a href="https://pvpn.netlify.app/online" class="btn glass-btn-outline d-flex align-items-center gap-2 px-3 py-2" target="_blank">
+                                <i class="bi bi-globe fs-5 text-success"></i>
+                                <span>Online Users ကြည့်ရန်</span>
                             </a>
                         </div>
                     </div>
                 </div>
+
                 <!-- Features -->
                 <div class="row g-4 justify-content-center">
-                    <div class="col-12 text-center"><h3 class="fw-bold" style="color:#198754;">PVPN Features</h3></div>
+                    <div class="col-12 text-center">
+                        <h3 class="fw-bold mb-3" style="color:#4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);">PVPN Features</h3>
+                    </div>
                     <div class="col-md-4 col-12">
                         <div class="card h-100 text-center p-4 feature-card">
-                            <i class="bi bi-lightning-charge-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
-                            <h5 class="mt-3 fw-bold">Ultra Fast Speed</h5>
-                            <p>Experience high-speed connections for smooth browsing, streaming, and gaming.</p>
+                            <i class="bi bi-lightning-charge-fill feature-icon fs-1 mb-2"></i>
+                            <h5 class="fw-bold">Ultra Fast Speed</h5>
+                            <p class="text-secondary mb-0">Experience high-speed connections for smooth browsing, streaming, and gaming.</p>
                         </div>
                     </div>
                     <div class="col-md-4 col-12">
                         <div class="card h-100 text-center p-4 feature-card">
-                            <i class="bi bi-shield-lock-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
-                            <h5 class="mt-3 fw-bold">Protect Your Privacy</h5>
-                            <p>Your online activity stays private & secure with strong encryption.</p>
+                            <i class="bi bi-shield-lock-fill feature-icon fs-1 mb-2"></i>
+                            <h5 class="fw-bold">Protect Your Privacy</h5>
+                            <p class="text-secondary mb-0">Your online activity stays private & secure with strong encryption.</p>
                         </div>
                     </div>
                     <div class="col-md-4 col-12">
                         <div class="card h-100 text-center p-4 feature-card">
-                            <i class="bi bi-diagram-3-fill feature-icon" style="font-size:2.5rem;color:#0d6efd;"></i>
-                            <h5 class="mt-3 fw-bold">Multi-Protocol Support</h5>
-                            <p>SSH+WS, OVPN+WS, Hysteria, SlowDNS, V2Ray အကုန်ထောက်ပံ့ထားပါတယ်။</p>
+                            <i class="bi bi-diagram-3-fill feature-icon fs-1 mb-2"></i>
+                            <h5 class="fw-bold">Multi-Protocol Support</h5>
+                            <p class="text-secondary mb-0">SSH+WS, OVPN+WS, Hysteria, SlowDNS, V2Ray အကုန်ထောက်ပံ့ထားပါတယ်။</p>
                         </div>
                     </div>
                 </div>
