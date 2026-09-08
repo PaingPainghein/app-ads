@@ -13,8 +13,9 @@
     
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             --primary: #38bdf8;
             --accent: #0d6efd;
             --text-main: #ffffff;
@@ -22,62 +23,72 @@
         }
 
         body {
-            background: var(--bg-dark);
+            background: radial-gradient(circle at 20% 20%, rgba(13, 110, 253, 0.25), transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.2), transparent 40%),
+                        linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+            background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Pyidaungsu', 'Inter', sans-serif;
             padding-bottom: 100px;
             min-height: 100vh;
         }
 
-        /* Navbar */
+        /* Glassmorphism Navbar */
         .navbar {
-            background: rgba(30, 41, 59, 0.95) !important;
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
         .navbar-brand {
             font-weight: 700;
             font-size: 1.2rem;
-            color: #38bdf8 !important;
+            color: var(--primary) !important;
         }
 
-        /* Product Card */
+        /* Glassmorphism Product Card */
         .product-card {
-            background: var(--card-bg);
-            border-radius: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
+            box-shadow: var(--glass-shadow);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             height: 100%;
             display: flex;
             flex-direction: column;
             position: relative;
         }
         .product-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.25);
         }
         
         .price-tag {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: linear-gradient(135deg, #FFC107, #FF9800);
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 193, 7, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #000;
             font-weight: bold;
             font-size: 0.75rem;
             padding: 4px 12px;
             border-radius: 20px;
             z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         .card-img-wrapper {
             height: 160px;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,15 +98,15 @@
             max-height: 100%;
             max-width: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.4));
             transition: transform 0.3s ease;
         }
         .product-card:hover .card-img-wrapper img {
-            transform: scale(1.1);
+            transform: scale(1.08);
         }
 
         .card-body {
-            padding: 15px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -104,7 +115,7 @@
         .card-title {
             font-size: 1.1rem;
             font-weight: bold;
-            color: #38bdf8 !important;
+            color: var(--primary) !important;
             margin-bottom: 6px;
         }
         
@@ -114,30 +125,38 @@
             margin-bottom: 15px;
         }
 
+        /* Glass Button */
         .btn-action {
             margin-top: auto;
-            border-radius: 50px;
+            border-radius: 12px;
             font-weight: 600;
-            background: linear-gradient(90deg, #0d6efd, #00d4ff);
-            border: none;
+            background: rgba(13, 110, 253, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #ffffff !important;
             width: 100%;
-            padding: 8px 0;
-            transition: opacity 0.2s;
+            padding: 9px 0;
+            transition: all 0.3s ease;
         }
         .btn-action:hover {
-            opacity: 0.9;
+            background: rgba(13, 110, 253, 0.9);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
             color: white;
+            transform: scale(1.02);
         }
 
-        /* Bottom Nav */
+        /* Glass Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: var(--card-bg);
-            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
             padding: 10px 0;
             z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
         }
         .bottom-nav .nav-link {
             color: var(--text-sub);
@@ -146,9 +165,10 @@
             flex-direction: column;
             align-items: center;
             gap: 4px;
+            transition: color 0.2s ease;
         }
-        .bottom-nav .nav-link.active {
-            color: #38bdf8;
+        .bottom-nav .nav-link.active, .bottom-nav .nav-link:hover {
+            color: var(--primary);
         }
         .bottom-nav i {
             font-size: 1.4rem;
@@ -202,15 +222,9 @@
                     </a>
                 </div>
                 <div class="col text-center">
-                    <a href="#" class="nav-link active">
-                        <i class="bi bi-gift-fill"></i>
-                        <span>Smart</span>
-                    </a>
-                </div>
-                <div class="col text-center">
-                    <a href="extendsim.html" class="nav-link">
+                    <a href="extendsim.html" class="nav-link active">
                         <i class="bi bi-sim-fill"></i>
-                        <span>ဆင်းမ်တိုး</span>
+                        <span>vpnနဲ့သုံးဖို့စမတ်နည်းများ</span>
                     </a>
                 </div>
                 <div class="col text-center">
